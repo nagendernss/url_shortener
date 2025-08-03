@@ -1,0 +1,23 @@
+# src/main/resources/application.yml
+spring:
+  data:
+    mongodb:
+      uri: mongodb://localhost:27017/url_shortener
+  thymeleaf:
+    cache: false
+    prefix: classpath:/templates/
+    suffix: .html
+
+server:
+  port: 8080
+
+logging:
+  level:
+    com.urlshortener: DEBUG
+    org.springframework.data.mongodb: DEBUG
+
+springdoc:
+  api-docs:
+    path: /api-docs
+  swagger-ui:
+    path: /swagger-ui.html

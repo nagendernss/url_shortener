@@ -1,0 +1,14 @@
+com\urlshortener\repository\UrlRepository.class
+com\urlshortener\controller\UrlController.class
+com\urlshortener\dto\UrlCreateRequest.class
+com\urlshortener\config\MongoConfig.class
+com\urlshortener\model\Url.class
+com\urlshortener\UrlShortenerApplication.class
+com\urlshortener\dto\UrlResponse.class
+com\urlshortener\repository\ClickEventRepository.class
+com\urlshortener\controller\AnalyticsController.class
+com\urlshortener\service\AnalyticsService.class
+com\urlshortener\model\AnalyticsResponse.class
+com\urlshortener\util\ShortIdGenerator.class
+com\urlshortener\model\ClickEvent.class
+com\urlshortener\service\UrlService.class
