@@ -56,6 +56,26 @@ mongod
 - **Swagger UI**: http://localhost:8080/swagger-ui.html
 - **API Docs**: http://localhost:8080/api-docs
 
+> The MongoDB URI and port are read from the `MONGODB_URI` and `PORT` environment
+> variables, falling back to `mongodb://localhost:27017/url_shortener` and `8080`.
+
+## ☁️ Deploy (Docker + Render + MongoDB Atlas)
+
+The app is containerized (`Dockerfile`) and ships a Render blueprint (`render.yaml`).
+
+1. **MongoDB Atlas** (free M0): create a cluster, a database user, and allow network
+   access from `0.0.0.0/0`. Grab the connection string and append the database name,
+   e.g. `mongodb+srv://<user>:<pass>@<cluster>.mongodb.net/url_shortener?retryWrites=true&w=majority`.
+2. **Render** → New → **Blueprint** → point at this repo → it reads `render.yaml`.
+3. Set the one secret env var **`MONGODB_URI`** to your Atlas string → **Apply**.
+
+Or run the container locally against any Mongo:
+
+```bash
+docker build -t url-shortener .
+docker run -p 8080:8080 -e MONGODB_URI="<your-atlas-uri>" url-shortener
+```
+
 ## 🌐 API Endpoints
 
 ### URL Management

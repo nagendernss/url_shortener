@@ -2,19 +2,19 @@
 spring:
   data:
     mongodb:
-      uri: mongodb://localhost:27017/url_shortener
+      uri: ${MONGODB_URI:mongodb://localhost:27017/url_shortener}
   thymeleaf:
     cache: false
     prefix: classpath:/templates/
     suffix: .html
 
 server:
-  port: 8080
+  port: ${PORT:8080}
 
 logging:
   level:
-    com.urlshortener: DEBUG
-    org.springframework.data.mongodb: DEBUG
+    com.urlshortener: INFO
+    org.springframework.data.mongodb: INFO
 
 springdoc:
   api-docs:
