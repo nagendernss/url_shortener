@@ -13,50 +13,47 @@
 <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
     <div class="container">
         <a class="navbar-brand" th:href="@{/}">URL Shortener</a>
+        <a class="muted-link ms-auto" th:href="@{/}">← new link</a>
     </div>
 </nav>
 
 <div class="container mt-4">
-    <div class="row">
-        <div class="col-md-12">
-            <div class="card">
-                <div class="card-header">
-                    <h3>Analytics for Short URL</h3>
+    <!-- Summary -->
+    <div class="card">
+        <div class="card-header"><h3>Analytics</h3></div>
+        <div class="card-body">
+            <div class="stat-grid">
+                <div class="stat-tile">
+                    <div class="k">Total clicks</div>
+                    <div class="v" th:text="${analytics.totalClicks}">0</div>
                 </div>
-                <div class="card-body">
-                    <div class="row">
-                        <div class="col-md-6">
-                            <p><strong>Short ID:</strong> <span th:text="${analytics.shortId}"></span></p>
-                            <p><strong>Original URL:</strong>
-                                <a th:href="${analytics.originalUrl}" th:text="${analytics.originalUrl}" target="_blank"></a></p>
-                        </div>
-                        <div class="col-md-6">
-                            <p><strong>Total Clicks:</strong> <span th:text="${analytics.totalClicks}"></span></p>
-                            <p><strong>Created:</strong> <span th:text="${#temporals.format(analytics.createdAt, 'yyyy-MM-dd HH:mm')}"></span></p>
-                        </div>
-                    </div>
+                <div class="stat-tile">
+                    <div class="k">Short ID</div>
+                    <div class="v small" th:text="${analytics.shortId}">-</div>
+                </div>
+                <div class="stat-tile">
+                    <div class="k">Created</div>
+                    <div class="v small" th:text="${#temporals.format(analytics.createdAt, 'yyyy-MM-dd HH:mm')}">-</div>
                 </div>
             </div>
+            <p class="mt-3 mb-0"><span class="k" style="font-family:var(--mono);color:var(--muted);text-transform:uppercase;font-size:11px;letter-spacing:.06em;">Original URL</span><br>
+                <a th:href="${analytics.originalUrl}" th:text="${analytics.originalUrl}" target="_blank" style="word-break:break-all;"></a></p>
         </div>
     </div>
 
     <!-- Charts Section -->
-    <div class="row mt-4">
-        <div class="col-md-6">
-            <div class="card">
-                <div class="card-header">
-                    <h5>Clicks by Date</h5>
-                </div>
+    <div class="row mt-3">
+        <div class="col-md-6 mb-3">
+            <div class="card h-100">
+                <div class="card-header"><h5>Clicks by date</h5></div>
                 <div class="card-body">
                     <canvas id="clicksByDateChart"></canvas>
                 </div>
             </div>
         </div>
-        <div class="col-md-6">
-            <div class="card">
-                <div class="card-header">
-                    <h5>Clicks by Referrer</h5>
-                </div>
+        <div class="col-md-6 mb-3">
+            <div class="card h-100">
+                <div class="card-header"><h5>Clicks by referrer</h5></div>
                 <div class="card-body">
                     <canvas id="clicksByRefererChart"></canvas>
                 </div>
@@ -65,20 +62,18 @@
     </div>
 
     <!-- Recent Clicks -->
-    <div class="row mt-4">
+    <div class="row mb-5">
         <div class="col-md-12">
             <div class="card">
-                <div class="card-header">
-                    <h5>Recent Clicks</h5>
-                </div>
+                <div class="card-header"><h5>Recent clicks</h5></div>
                 <div class="card-body">
                     <div class="table-responsive">
                         <table class="table table-striped">
                             <thead>
                             <tr>
-                                <th>Date/Time</th>
-                                <th>IP Address</th>
-                                <th>User Agent</th>
+                                <th>Date / time</th>
+                                <th>IP address</th>
+                                <th>User agent</th>
                                 <th>Referrer</th>
                             </tr>
                             </thead>
@@ -99,12 +94,20 @@
 </div>
 
 <script th:inline="javascript">
+    // theme defaults for both charts
+    Chart.defaults.color = '#9a9aa6';
+    Chart.defaults.borderColor = 'rgba(255,255,255,.08)';
+    const EMERALD = '#00d179';
+
     // Clicks by Date Chart
     const clicksByDateData = /*[[${analytics.clicksByDate}]]*/ {};
     const dateLabels = Object.keys(clicksByDateData).sort();
     const dateValues = dateLabels.map(date => clicksByDateData[date]);
 
     const ctx1 = document.getElementById('clicksByDateChart').getContext('2d');
+    const grad = ctx1.createLinearGradient(0, 0, 0, 300);
+    grad.addColorStop(0, 'rgba(0,209,121,.35)');
+    grad.addColorStop(1, 'rgba(0,209,121,0)');
     new Chart(ctx1, {
         type: 'line',
         data: {
@@ -112,18 +115,17 @@
             datasets: [{
                 label: 'Clicks',
                 data: dateValues,
-                borderColor: 'rgb(75, 192, 192)',
-                backgroundColor: 'rgba(75, 192, 192, 0.2)',
-                tension: 0.1
+                borderColor: EMERALD,
+                backgroundColor: grad,
+                pointBackgroundColor: EMERALD,
+                fill: true,
+                tension: 0.3
             }]
         },
         options: {
             responsive: true,
-            scales: {
-                y: {
-                    beginAtZero: true
-                }
-            }
+            plugins: { legend: { display: false } },
+            scales: { y: { beginAtZero: true, ticks: { precision: 0 } } }
         }
     });
 
@@ -139,19 +141,11 @@
             labels: refererLabels,
             datasets: [{
                 data: refererValues,
-                backgroundColor: [
-                    '#FF6384',
-                    '#36A2EB',
-                    '#FFCE56',
-                    '#4BC0C0',
-                    '#9966FF',
-                    '#FF9F40'
-                ]
+                borderColor: '#131318',
+                backgroundColor: ['#00d179', '#4d7cff', '#a06bff', '#ffc24b', '#ff6a5f', '#37e096']
             }]
         },
-        options: {
-            responsive: true
-        }
+        options: { responsive: true, plugins: { legend: { position: 'bottom' } } }
     });
 </script>
 
